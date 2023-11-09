@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+ 
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+model Subreddit {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  userId      String
+
+  //timestamp
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts      Post[]
+
+  //relations
+  creatorId   String?
+  creator   String
+
+  subscribers Subscription[]
+}
+
+model Subscription {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  subredditId String @db.ObjectId
+  subreddit Subreddit @relation(fields: [subredditId], references: [id])
+
+ 
+}
+
+model Post {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  content Json?
+
+  //timestamp
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  //relations
+  author String 
+  
+
+  subredditId String @db.ObjectId
+  subreddit Subreddit @relation(fields: [subredditId], references: [id])
+
+  comments Comment[]
+  votes Vote[]
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text     String
+
+  //timestamp
+  createdAt DateTime @default(now())
+
+  //relations
+  author String
+
+
+  postId String @db.ObjectId
+  post Post @relation(fields: [postId], references: [id],onDelete: Cascade)
+
+  replyToId String @db.ObjectId
+  replyTo Comment? @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies Comment[] @relation("ReplyTo")
+
+  votes CommentVote[]
+  commentId String?
+}
+
+model Vote {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId String
+  postId String @db.ObjectId
+  post Post @relation(fields: [postId], references: [id])
+  type VoteType
+
+ 
+}
+
+
+model CommentVote {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  commentId String @db.ObjectId
+  comment Comment @relation(fields: [commentId], references: [id],onDelete: Cascade)
+  type VoteType
+}
