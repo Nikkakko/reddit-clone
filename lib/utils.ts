@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { formatDistanceToNowStrict } from 'date-fns';
 import locale from 'date-fns/locale/en-US';
+import { User } from '@clerk/nextjs/server';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -53,4 +54,12 @@ export function formatTimeToNow(date: Date): string {
       formatDistance,
     },
   });
+}
+
+export function getUserEmail(user: User | null | undefined) {
+  const email =
+    user?.emailAddresses?.find(e => e.id === user.primaryEmailAddressId)
+      ?.emailAddress ?? '';
+
+  return email;
 }

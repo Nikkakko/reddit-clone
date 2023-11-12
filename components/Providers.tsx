@@ -10,8 +10,8 @@ export function Providers({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider {...props}>
       <TooltipProvider>
-        {children}
         <Toaster />
+        {children}
       </TooltipProvider>
     </NextThemesProvider>
   );
