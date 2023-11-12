@@ -55,10 +55,12 @@ const CreatePage: React.FC<CreatePageProps> = ({}) => {
             title: 'Community Created',
             description: 'Your community has been created.',
           });
+          router.push(`/r/${data.success}`);
         } else if (data.error401) {
           toast({
             title: 'Not Authenticated',
             description: 'You must be logged in to create a community.',
+            onClick: () => router.push('/sign-in'),
           });
         } else if (data.error409) {
           toast({
