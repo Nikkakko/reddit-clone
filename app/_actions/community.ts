@@ -2,6 +2,7 @@
 import { db } from '@/lib/db';
 import { getUserEmail } from '@/lib/utils';
 import { currentUser } from '@clerk/nextjs/server';
+import { revalidatePath } from 'next/cache';
 
 export default async function createCommunityAction(input: string) {
   const user = await currentUser();
@@ -10,7 +11,10 @@ export default async function createCommunityAction(input: string) {
 
   if (!user) {
     return {
-      error401: 'You must be logged in to create a community',
+      error401: {
+        title: 'Not authenticated',
+        message: 'You must be logged in to create a community',
+      },
     };
   }
 
@@ -23,7 +27,10 @@ export default async function createCommunityAction(input: string) {
 
     if (subredditExists) {
       return {
-        error409: 'Community already exists',
+        error409: {
+          title: 'Community already exists',
+          message: 'A community with that name already exists',
+        },
       };
     }
 
@@ -43,12 +50,16 @@ export default async function createCommunityAction(input: string) {
       },
     });
 
+    revalidatePath('/r/' + subreddit.name);
     return {
       success: subreddit.name,
     };
   } catch (error) {
     return {
-      error422: 'Something went wrong',
+      error422: {
+        title: 'Unable to create community',
+        message: 'Unable to create community',
+      },
     };
   }
 }

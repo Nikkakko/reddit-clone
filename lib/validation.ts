@@ -8,3 +8,11 @@ export const formSchema = z.object({
     })
     .max(255),
 });
+
+export const subredditSubscriptionValidator = z.object({
+  subredditId: z.string(),
+});
+
+export type SubscibeToSubredditPayload = z.infer<
+  typeof subredditSubscriptionValidator
+>;

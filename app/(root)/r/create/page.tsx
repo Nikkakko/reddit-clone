@@ -58,19 +58,19 @@ const CreatePage: React.FC<CreatePageProps> = ({}) => {
           router.push(`/r/${data.success}`);
         } else if (data.error401) {
           toast({
-            title: 'Not Authenticated',
-            description: 'You must be logged in to create a community.',
+            title: data.error401.title,
+            description: data.error401.message,
             onClick: () => router.push('/sign-in'),
           });
         } else if (data.error409) {
           toast({
-            title: 'Community Exists',
-            description: 'This community already exists.',
+            title: data.error409.title,
+            description: data.error409.message,
           });
         } else if (data.error422) {
           toast({
-            title: 'Something went wrong',
-            description: 'Try again later.',
+            title: data.error422.title,
+            description: data.error422.message,
           });
         }
       });

@@ -1,14 +1,11 @@
 import { User } from '@clerk/nextjs/server';
-
 import { AvatarProps } from '@radix-ui/react-avatar';
-
 import { Icons } from '@/components/Icons';
-
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from './ui/avatar';
 
 interface UserAvatarProps extends AvatarProps {
-  user: Pick<User, 'imageUrl' | 'username'> | null;
+  user: Pick<User, 'imageUrl' | 'firstName'> | null;
 }
 
 export function UserAvatar({ user, ...props }: UserAvatarProps) {
@@ -25,7 +22,7 @@ export function UserAvatar({ user, ...props }: UserAvatarProps) {
         </div>
       ) : (
         <AvatarFallback>
-          <span className='sr-only'>{user?.username}</span>
+          <span className='sr-only'>{user?.firstName}</span>
           <Icons.user className='h-4 w-4' />
         </AvatarFallback>
       )}
