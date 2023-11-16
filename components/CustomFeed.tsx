@@ -26,7 +26,7 @@ const CustomFeed: React.FC<CustomFeedProps> = async () => {
     where: {
       subreddit: {
         name: {
-          in: followedCommunities.map(sub => sub.subreddit.name),
+          in: followedCommunities?.map(sub => sub.subreddit.name),
         },
       },
     },
@@ -43,6 +43,7 @@ const CustomFeed: React.FC<CustomFeedProps> = async () => {
 
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
+
   return <PostFeed initialPosts={pots} />;
 };
 
