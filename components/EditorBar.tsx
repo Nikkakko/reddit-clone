@@ -1,15 +1,7 @@
 'use client';
 import { Editor } from '@tiptap/react';
 import * as React from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+
 import {
   Bold,
   Strikethrough,
@@ -34,14 +26,6 @@ interface EditorBarProps {
 
 const EditorBar: React.FC<EditorBarProps> = ({ editor }) => {
   const [isPending, startTransition] = React.useTransition();
-  const [fontSizes, setFontSizes] = React.useState([
-    '12',
-    '14',
-    '16',
-    '18',
-    '20',
-    '24',
-  ]);
 
   if (!editor) return null;
   return (
@@ -140,7 +124,7 @@ const EditorBar: React.FC<EditorBarProps> = ({ editor }) => {
             <TooltipContent>Underline</TooltipContent>
           </Tooltip>
         </Toggle>
-      </div>
+      </div>{' '}
     </div>
   );
 };

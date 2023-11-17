@@ -1,4 +1,3 @@
-import Editor from '@/components/Editor';
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 import { notFound } from 'next/navigation';
@@ -36,13 +35,7 @@ const SubmitPage: React.FC<SubmitPageProps> = async ({ params }) => {
       </div>
 
       {/* Form */}
-      <CreatePostTabs />
-
-      <div className='w-full flex justify-end'>
-        <Button type='submit' className='w-full' form='subreddit-post-form'>
-          Post
-        </Button>
-      </div>
+      <CreatePostTabs subredditId={subreddit.id} />
     </div>
   );
 };

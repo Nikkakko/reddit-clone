@@ -1,25 +1,27 @@
 'use client';
 import * as React from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, EditorContentProps } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useTheme } from 'next-themes';
 import EditorBar from './EditorBar';
 import Underline from '@tiptap/extension-underline';
+import { UseFormSetValue } from 'react-hook-form';
+import { PostCreationRequest } from '@/lib/validation';
 
 interface EditorProps {
-  title: string;
+  contentValue: string;
+  setValue: UseFormSetValue<PostCreationRequest>;
 }
 
-const Editor: React.FC<EditorProps> = ({ title }) => {
+const Editor: React.FC<EditorProps> = ({ contentValue, setValue }) => {
   const { resolvedTheme } = useTheme();
-  const [content, setContent] = React.useState<string>('');
 
   const editor = useEditor({
     extensions: [StarterKit.configure({}), Underline],
-    content: content,
+    content: contentValue,
 
     onUpdate: ({ editor }) => {
-      setContent(editor.getHTML());
+      setValue('content', editor.getHTML(), { shouldValidate: true });
     },
     editorProps: {
       attributes: {
