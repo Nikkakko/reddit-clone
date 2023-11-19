@@ -14,6 +14,7 @@ import { createSubredditPost } from '@/app/_actions/subreddit';
 import { useToast } from './ui/use-toast';
 import { Button } from './ui/button';
 import { Icons } from './Icons';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface CreatePostTabsProps {
   subredditId: string;
@@ -24,6 +25,8 @@ type FormData = z.infer<typeof PostValidator>;
 const CreatePostTabs: React.FC<CreatePostTabsProps> = ({ subredditId }) => {
   const { toast } = useToast();
   const [isPending, startTransition] = React.useTransition();
+  const pathname = usePathname();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -46,7 +49,10 @@ const CreatePostTabs: React.FC<CreatePostTabsProps> = ({ subredditId }) => {
     const payload: PostCreationRequest = {
       subredditId,
       title: data.title,
-      content: data.content,
+      content: {
+        image: localStorage.getItem('image') || null,
+        text: data.content,
+      },
     };
 
     startTransition(async () => {
@@ -74,10 +80,18 @@ const CreatePostTabs: React.FC<CreatePostTabsProps> = ({ subredditId }) => {
         }
 
         if (values.success) {
+          const newPathname = pathname.split('/').slice(0, -1).join('/');
+          router.push(newPathname);
+
+          router.refresh();
           toast({
             title: values.success.title,
             description: values.success.message,
           });
+
+          //remove image from local storage
+          localStorage.removeItem('image');
+          localStorage.removeItem('imageName');
         }
 
         reset();

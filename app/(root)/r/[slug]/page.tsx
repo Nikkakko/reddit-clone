@@ -1,7 +1,8 @@
 import MiniCreatePost from '@/components/MiniCreatePost';
+import PostFeed from '@/components/PostFeed';
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/lib/config';
 import { db } from '@/lib/db';
-import { currentUser } from '@clerk/nextjs';
+import { clerkClient, currentUser } from '@clerk/nextjs';
 import { notFound } from 'next/navigation';
 import * as React from 'react';
 
@@ -39,6 +40,7 @@ const SlugPage: React.FC<Props> = async ({ params: { slug } }) => {
       </h1>
       <MiniCreatePost user={JSON.parse(JSON.stringify(user))} />
       {/* TODO: Show posts in user feed */}
+      <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} />
     </>
   );
 };

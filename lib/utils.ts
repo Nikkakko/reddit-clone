@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { formatDistanceToNowStrict } from 'date-fns';
 import locale from 'date-fns/locale/en-US';
 import { User } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -62,6 +63,12 @@ export function getUserEmail(user: User | null | undefined) {
       ?.emailAddress ?? '';
 
   return email;
+}
+
+export async function getUserById(userId: string) {
+  const user = await clerkClient.users?.getUser(userId);
+
+  return user;
 }
 
 export const formatDate = (date: Date) => {

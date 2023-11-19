@@ -1,12 +1,14 @@
 'use client';
 import * as React from 'react';
-import { useEditor, EditorContent, EditorContentProps } from '@tiptap/react';
+import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useTheme } from 'next-themes';
 import EditorBar from './EditorBar';
 import Underline from '@tiptap/extension-underline';
+import Image from '@tiptap/extension-image';
 import { UseFormSetValue } from 'react-hook-form';
 import { PostCreationRequest } from '@/lib/validation';
+import UploadUi from './UploadUi';
 
 interface EditorProps {
   contentValue: string;
@@ -17,12 +19,23 @@ const Editor: React.FC<EditorProps> = ({ contentValue, setValue }) => {
   const { resolvedTheme } = useTheme();
 
   const editor = useEditor({
-    extensions: [StarterKit.configure({}), Underline],
+    extensions: [
+      StarterKit.configure({}),
+      Underline,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'w-full h-full',
+        },
+      }),
+    ],
     content: contentValue,
 
     onUpdate: ({ editor }) => {
       setValue('content', editor.getHTML(), { shouldValidate: true });
     },
+
     editorProps: {
       attributes: {
         class:
@@ -35,7 +48,7 @@ const Editor: React.FC<EditorProps> = ({ contentValue, setValue }) => {
     <div className='flex flex-col gap-y-2 max-w-full '>
       <EditorContent
         editor={editor}
-        className='w-full max-w-full border border-input'
+        className='w-full max-w-full border border-input '
         children={<EditorBar editor={editor} />}
       />
     </div>

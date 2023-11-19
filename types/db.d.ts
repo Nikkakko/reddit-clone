@@ -1,8 +1,9 @@
-import type { Post, Subreddit, User, Vote, Comment } from '@prisma/client';
+import type { Post, Subreddit, Vote, Comment } from '@prisma/client';
+import { User } from '@clerk/nextjs/server';
 
 export type ExtendedPost = Post & {
   subreddit: Subreddit;
   votes: Vote[];
-  author: User;
+  author: string;
   comments: Comment[];
 };

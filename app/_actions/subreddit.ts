@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { currentUser } from '@clerk/nextjs/server';
 import { SubscibeToSubredditPayload } from '@/lib/validation';
 import * as z from 'zod';
+import { revalidatePath } from 'next/cache';
 
 export const subscribeAction = async (
   subredditId: SubscibeToSubredditPayload['subredditId']
@@ -43,6 +44,8 @@ export const subscribeAction = async (
         userId: user.id,
       },
     });
+
+    revalidatePath('/');
 
     return {
       success: {
@@ -99,6 +102,8 @@ export const unsubscribeAction = async (
       },
     });
 
+    revalidatePath('/');
+
     return {
       success: {
         title: 'Success',
@@ -154,10 +159,11 @@ export const createSubredditPost = async (
         title,
         content,
         subredditId,
-        author: user?.firstName + ' ' + user?.lastName,
+        author: user.firstName + ' ' + user.lastName,
       },
     });
 
+    revalidatePath('/');
     return {
       success: {
         title: 'Success',

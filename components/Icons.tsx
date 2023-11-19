@@ -1,7 +1,7 @@
-import { Loader, Trash, User } from 'lucide-react';
+import { Loader2, Trash, User } from 'lucide-react';
 
 export const Icons = {
   user: User,
   trash: Trash,
-  loader: Loader,
+  loader: Loader2,
 };
