@@ -3,6 +3,8 @@
 import { db } from '@/lib/db';
 import { ExtendedPost } from '@/types/db';
 import { currentUser, clerkClient } from '@clerk/nextjs/server';
+import { VoteType } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 
 export async function getPosts(
   limit: number,
@@ -19,6 +21,11 @@ export async function getPosts(
       const followedCommunities = await db.subscription.findMany({
         where: {
           userId: session.id,
+          subreddit: {
+            NOT: {
+              id: undefined,
+            },
+          },
         },
         include: {
           subreddit: true,
@@ -61,6 +68,109 @@ export async function getPosts(
     });
 
     return JSON.parse(JSON.stringify(posts));
+  } catch (error) {
+    return {
+      error: 'Something went wrong.',
+    };
+  }
+}
+
+export async function voteToPostAction(postId: string, voteType: VoteType) {
+  try {
+    const session = await currentUser();
+
+    if (!session) {
+      return {
+        error: 'You must be logged in to vote.',
+      };
+    }
+
+    const post = await db.post.findUnique({
+      where: {
+        id: postId,
+      },
+
+      include: {
+        votes: true,
+      },
+    });
+
+    if (!post) {
+      return {
+        error: 'Post not found.',
+      };
+    }
+
+    const vote = await db.vote.findFirst({
+      where: {
+        postId: postId,
+        userId: session.id,
+      },
+    });
+
+    //based on voteType is UP or DOWN update the vote
+
+    if (vote) {
+      if (vote.type === voteType) {
+        await db.vote.delete({
+          where: {
+            id: vote.id,
+            // value: voteType === VoteType.UP ? 1 : -1,
+          },
+        });
+      }
+
+      await db.vote.update({
+        where: {
+          id: vote.id,
+        },
+        data: {
+          type: voteType,
+          // value: voteType === VoteType.UP ? 1 : -1,
+        },
+      });
+    } else {
+      await db.vote.create({
+        data: {
+          type: voteType,
+          userId: session.id,
+          // value: voteType === VoteType.UP ? 1 : -1,
+
+          post: {
+            connect: {
+              id: postId,
+            },
+          },
+        },
+      });
+    }
+
+    revalidatePath('/');
+  } catch (error) {
+    return {
+      error: 'Something went wrong.',
+    };
+  }
+}
+
+export async function postsVotes(postId: string) {
+  try {
+    const post = await db.post.findUnique({
+      where: {
+        id: postId,
+      },
+      include: {
+        votes: true,
+      },
+    });
+
+    if (!post) {
+      return {
+        error: 'Post not found.',
+      };
+    }
+
+    return JSON.parse(JSON.stringify(post.votes));
   } catch (error) {
     return {
       error: 'Something went wrong.',

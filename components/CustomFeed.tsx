@@ -15,6 +15,11 @@ const CustomFeed: React.FC<CustomFeedProps> = async () => {
   const followedCommunities = await db.subscription.findMany({
     where: {
       userId: user.id,
+      subreddit: {
+        NOT: {
+          id: undefined,
+        },
+      },
     },
 
     include: {
@@ -22,11 +27,11 @@ const CustomFeed: React.FC<CustomFeedProps> = async () => {
     },
   });
 
-  const pots = await db.post.findMany({
+  const posts = await db.post.findMany({
     where: {
       subreddit: {
         name: {
-          in: followedCommunities?.map(sub => sub.subreddit.name),
+          in: followedCommunities.map(sub => sub.subreddit.name),
         },
       },
     },
@@ -44,7 +49,7 @@ const CustomFeed: React.FC<CustomFeedProps> = async () => {
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
 
-  return <PostFeed initialPosts={pots} />;
+  return <PostFeed initialPosts={posts} />;
 };
 
 export default CustomFeed;

@@ -37,10 +37,10 @@ model Subreddit {
 model Subscription {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   userId     String
-  subredditId String @db.ObjectId
-  subreddit Subreddit @relation(fields: [subredditId], references: [id])
 
- 
+  subreddit Subreddit @relation(fields: [subredditId], references: [id])
+  subredditId String @db.ObjectId
+
 }
 
 model Post {
@@ -87,11 +87,11 @@ model Comment {
 
 model Vote {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-
   userId String
   postId String @db.ObjectId
   post Post @relation(fields: [postId], references: [id])
   type VoteType
+  value Int?
 
  
 }

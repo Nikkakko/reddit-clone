@@ -7,9 +7,10 @@ import { Post, Vote } from '@prisma/client';
 import Link from 'next/link';
 // import { Post } from '@prisma/client';
 import * as React from 'react';
-import PostVoteClient from './PostVoteClient';
+import PostVoteClient from './post-vote/PostVoteClient';
 import { MessageSquare } from 'lucide-react';
 import EditorOutput from './EditorOutput';
+import PostVoteServer from './post-vote/PostVoteServer';
 
 type PartialVote = Pick<Vote, 'type'>;
 
@@ -22,6 +23,7 @@ interface PostProps {
   subredditName: string;
   currentVote?: PartialVote;
   commentAmt: number;
+  postsWithTotalVotes?: ExtendedPost[];
 }
 
 const Post: React.FC<PostProps> = ({
@@ -34,15 +36,16 @@ const Post: React.FC<PostProps> = ({
   const pRef = React.useRef<HTMLParagraphElement>(null);
 
   return (
-    <div className='rounded-md bg-primary shadow'>
+    <div className='rounded-md shadow bg-primary-foreground'>
       <div className='px-6 py-4 flex justify-between'>
         <PostVoteClient
           postId={post.id}
           initialVotesAmt={votesAmt}
           initialVote={currentVote?.type}
+          subredditName={subredditName}
         />
 
-        <div className='w-0 flex-1'>
+        <div className='w-0 flex-1 bg-primary p-2'>
           <div className='max-h-40 mt-1 text-xs text-background'>
             {subredditName ? (
               <>

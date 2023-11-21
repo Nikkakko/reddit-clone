@@ -6,6 +6,8 @@ import { clerkClient, currentUser } from '@clerk/nextjs';
 import { notFound } from 'next/navigation';
 import * as React from 'react';
 
+export const dynamic = 'auto';
+
 interface Props {
   params: {
     slug: string;
@@ -26,9 +28,30 @@ const SlugPage: React.FC<Props> = async ({ params: { slug } }) => {
           comments: true,
           subreddit: true,
         },
+        take: INFINITE_SCROLL_PAGINATION_RESULTS, // Limit the number of posts fetched
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  const initialPosts = await db.post.findMany({
+    where: {
+      subreddit: {
+        name: slug,
       },
     },
 
+    orderBy: {
+      createdAt: 'desc',
+    },
+
+    include: {
+      votes: true,
+      comments: true,
+      subreddit: true,
+    },
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
 
@@ -40,7 +63,7 @@ const SlugPage: React.FC<Props> = async ({ params: { slug } }) => {
       </h1>
       <MiniCreatePost user={JSON.parse(JSON.stringify(user))} />
       {/* TODO: Show posts in user feed */}
-      <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} />
+      <PostFeed initialPosts={initialPosts} subredditName={subreddit.name} />
     </>
   );
 };

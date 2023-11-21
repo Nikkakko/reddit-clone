@@ -4,6 +4,48 @@ import { currentUser } from '@clerk/nextjs/server';
 import { SubscibeToSubredditPayload } from '@/lib/validation';
 import * as z from 'zod';
 import { revalidatePath } from 'next/cache';
+import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/lib/config';
+
+export async function getSubbreditPosts(slug: string) {
+  try {
+    const subreddit = await db.subreddit.findFirst({
+      where: {
+        name: slug,
+      },
+      include: {
+        posts: {
+          include: {
+            votes: true,
+            comments: true,
+            subreddit: true,
+          },
+        },
+      },
+
+      take: INFINITE_SCROLL_PAGINATION_RESULTS,
+    });
+
+    if (!subreddit) {
+      return {
+        error404: {
+          title: 'Not Found',
+          message: 'This subreddit does not exist',
+        },
+      };
+    }
+    revalidatePath('/');
+    return {
+      data: subreddit,
+    };
+  } catch (error) {
+    return {
+      error500: {
+        title: 'Internal Server Error',
+        message: 'There was an error fetching posts for this subreddit',
+      },
+    };
+  }
+}
 
 export const subscribeAction = async (
   subredditId: SubscibeToSubredditPayload['subredditId']

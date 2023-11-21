@@ -1,8 +1,10 @@
 import { db } from '@/lib/db';
 import { currentUser } from '@clerk/nextjs/server';
 import { z } from 'zod';
+import { revalidatePath } from 'next/cache';
+import { NextRequest } from 'next/server';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const url = new URL(req.url);
 
   const session = await currentUser();
@@ -13,6 +15,11 @@ export async function GET(req: Request) {
     const followedCommunities = await db.subscription.findMany({
       where: {
         userId: session.id,
+        subreddit: {
+          NOT: {
+            id: undefined,
+          },
+        },
       },
       include: {
         subreddit: true,
@@ -56,6 +63,7 @@ export async function GET(req: Request) {
     const posts = await db.post.findMany({
       take: parseInt(limit),
       skip: (parseInt(page) - 1) * parseInt(limit), // skip should start from 0 for page 1
+
       orderBy: {
         createdAt: 'desc',
       },
@@ -66,6 +74,8 @@ export async function GET(req: Request) {
       },
       where: whereClause,
     });
+
+    revalidatePath(req.nextUrl.pathname);
 
     return new Response(JSON.stringify(posts));
   } catch (error) {
