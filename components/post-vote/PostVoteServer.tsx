@@ -1,46 +1,57 @@
-import { db } from '@/lib/db';
-import { currentUser } from '@clerk/nextjs';
-import * as React from 'react';
+import type { Post, Vote } from '@prisma/client';
+import { notFound } from 'next/navigation';
 import PostVoteClient from './PostVoteClient';
+import { currentUser } from '@clerk/nextjs/server';
 
 interface PostVoteServerProps {
   postId: string;
-  initialVotesAmt: number;
-  initialVote?: 'UP' | 'DOWN';
-  subredditName: string;
+  initialVotesAmt?: number;
+  initialVote?: Vote['type'] | null;
+  getData?: () => Promise<(Post & { votes: Vote[] }) | null>;
 }
 
-const PostVoteServer: React.FC<PostVoteServerProps> = async ({
+/**
+ * We split the PostVotes into a client and a server component to allow for dynamic data
+ * fetching inside of this component, allowing for faster page loads via suspense streaming.
+ * We also have to option to fetch this info on a page-level and pass it in.
+ *
+ */
+
+const PostVoteServer = async ({
   postId,
   initialVotesAmt,
   initialVote,
-  subredditName,
-}) => {
-  const user = await currentUser();
+  getData,
+}: PostVoteServerProps) => {
+  const session = await currentUser();
 
-  const postVotes = await db.vote.findMany({
-    where: {
-      postId,
-    },
-  });
+  let _votesAmt: number = 0;
+  let _currentVote: Vote['type'] | null | undefined = undefined;
 
-  const votesAmt = postVotes.reduce((acc, vote) => {
-    if (vote.type === 'UP') return acc + 1;
-    if (vote.type === 'DOWN') return acc - 1;
-    return acc;
-  }, 0);
+  if (getData) {
+    // fetch data in component
+    const post = await getData();
+    if (!post) return notFound();
 
-  const currentVote = postVotes.find(vote => vote.userId === user?.id);
+    _votesAmt = post.votes.reduce((acc, vote) => {
+      if (vote.type === 'UP') return acc + 1;
+      if (vote.type === 'DOWN') return acc - 1;
+      return acc;
+    }, 0);
+
+    _currentVote = post.votes.find(vote => vote.userId === session?.id)?.type;
+  } else {
+    // passed as props
+    _votesAmt = initialVotesAmt!;
+    _currentVote = initialVote;
+  }
 
   return (
-    <div>
-      <PostVoteClient
-        postId={postId}
-        initialVotesAmt={votesAmt}
-        initialVote={currentVote?.type}
-        subredditName={subredditName}
-      />
-    </div>
+    <PostVoteClient
+      postId={postId}
+      initialVotesAmt={_votesAmt}
+      initialVote={_currentVote}
+    />
   );
 };
 

@@ -2,9 +2,14 @@ import MiniCreatePost from '@/components/MiniCreatePost';
 import PostFeed from '@/components/PostFeed';
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/lib/config';
 import { db } from '@/lib/db';
-import { clerkClient, currentUser } from '@clerk/nextjs';
+import { currentUser } from '@clerk/nextjs';
 import { notFound } from 'next/navigation';
 import * as React from 'react';
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query';
 
 export const dynamic = 'auto';
 
@@ -55,6 +60,7 @@ const SlugPage: React.FC<Props> = async ({ params: { slug } }) => {
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
 
+  console.log(initialPosts, subreddit);
   if (!subreddit) return notFound();
   return (
     <>

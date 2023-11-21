@@ -42,7 +42,6 @@ const Post: React.FC<PostProps> = ({
           postId={post.id}
           initialVotesAmt={votesAmt}
           initialVote={currentVote?.type}
-          subredditName={subredditName}
         />
 
         <div className='w-0 flex-1 bg-primary p-2'>

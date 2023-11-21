@@ -1,6 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
+import { PostVoteValidator } from '@/lib/validation';
 import { ExtendedPost } from '@/types/db';
 import { currentUser, clerkClient } from '@clerk/nextjs/server';
 import { VoteType } from '@prisma/client';
@@ -101,7 +102,7 @@ export async function voteToPostAction(postId: string, voteType: VoteType) {
       };
     }
 
-    const vote = await db.vote.findFirst({
+    const existingVote = await db.vote.findFirst({
       where: {
         postId: postId,
         userId: session.id,
@@ -110,23 +111,21 @@ export async function voteToPostAction(postId: string, voteType: VoteType) {
 
     //based on voteType is UP or DOWN update the vote
 
-    if (vote) {
-      if (vote.type === voteType) {
+    if (existingVote) {
+      if (existingVote.type === voteType) {
         await db.vote.delete({
           where: {
-            id: vote.id,
-            // value: voteType === VoteType.UP ? 1 : -1,
+            id: existingVote.id,
           },
         });
       }
 
       await db.vote.update({
         where: {
-          id: vote.id,
+          id: existingVote.id,
         },
         data: {
           type: voteType,
-          // value: voteType === VoteType.UP ? 1 : -1,
         },
       });
     } else {
@@ -134,13 +133,7 @@ export async function voteToPostAction(postId: string, voteType: VoteType) {
         data: {
           type: voteType,
           userId: session.id,
-          // value: voteType === VoteType.UP ? 1 : -1,
-
-          post: {
-            connect: {
-              id: postId,
-            },
-          },
+          postId,
         },
       });
     }

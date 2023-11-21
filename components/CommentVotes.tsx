@@ -1,38 +1,44 @@
 'use client';
 import * as React from 'react';
-import { Button } from '../ui/button';
+
 import { ArrowBigDown, ArrowBigUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { voteToPostAction } from '@/app/_actions/posts';
 import { useRouter } from 'next/navigation';
-import { Vote, VoteType } from '@prisma/client';
+import { CommentVote, Vote, VoteType } from '@prisma/client';
 import { usePrevious } from '@mantine/hooks';
 import { useMutation } from '@tanstack/react-query';
 import { PostVoteRequest } from '@/lib/validation';
 import axios, { AxiosError } from 'axios';
-import { useToast } from '../ui/use-toast';
+import { useToast } from './ui/use-toast';
+import { Button } from './ui/button';
+import { voteOnCommentAction } from '@/app/_actions/subreddit';
 
-interface PostVoteClientProps {
-  postId: string;
-  initialVotesAmt: number;
-  initialVote?: VoteType | null;
+type PartialVote = Pick<CommentVote, 'type'>;
+
+interface CommentVoteProps {
+  commentId: string;
+  votesAmt: number;
+  currentVote?: PartialVote;
 }
 
-const PostVoteClient: React.FC<PostVoteClientProps> = ({
-  postId,
-  initialVotesAmt,
-  initialVote,
+const CommentVotes: React.FC<CommentVoteProps> = ({
+  commentId,
+  votesAmt: _votesAmt,
+  currentVote: _currentVote,
 }) => {
   const { toast } = useToast();
-  const [votesAmt, setVotesAmt] = React.useState(initialVotesAmt);
-  const [currentVote, setCurrentVote] = React.useState(initialVote);
+  const [votesAmt, setVotesAmt] = React.useState<number>(_votesAmt);
+  const [currentVote, setCurrentVote] = React.useState<PartialVote | undefined>(
+    _currentVote
+  );
   const prevVote = usePrevious(currentVote);
 
   const router = useRouter();
 
   const { mutate: vote } = useMutation({
     mutationFn: async (type: VoteType) => {
-      await voteToPostAction(postId, type);
+      await voteOnCommentAction(commentId, type);
     },
 
     onError: (err, voteType) => {
@@ -58,15 +64,15 @@ const PostVoteClient: React.FC<PostVoteClientProps> = ({
       });
     },
 
-    onMutate: (type: VoteType) => {
-      if (currentVote === type) {
+    onMutate: type => {
+      if (currentVote?.type === type) {
         // User is voting the same way again, so remove their vote
         setCurrentVote(undefined);
         if (type === 'UP') setVotesAmt(prev => prev - 1);
         else if (type === 'DOWN') setVotesAmt(prev => prev + 1);
       } else {
         // User is voting in the opposite direction, so subtract 2
-        setCurrentVote(type);
+        setCurrentVote({ type });
         if (type === 'UP') setVotesAmt(prev => prev + (currentVote ? 2 : 1));
         else if (type === 'DOWN')
           setVotesAmt(prev => prev - (currentVote ? 2 : 1));
@@ -74,23 +80,18 @@ const PostVoteClient: React.FC<PostVoteClientProps> = ({
     },
   });
 
-  // ensure sync with server
-  React.useEffect(() => {
-    setCurrentVote(initialVote);
-  }, [initialVote]);
-
   return (
-    <div className='flex flex-col gap-4 sm:gap-0 mr-6 sm:w-20 pb-4 sm:pb-0 bg-secondary'>
+    <div className='flex gap-1'>
       {/* upvote */}
       <Button
         onClick={() => vote('UP')}
         size='sm'
-        variant='outline'
+        variant='ghost'
         aria-label='upvote'
       >
         <ArrowBigUp
           className={cn('h-5 w-5 text-zinc-700', {
-            'text-emerald-500 fill-emerald-500': currentVote === 'UP',
+            'text-emerald-500 fill-emerald-500': currentVote?.type === 'UP',
           })}
         />
       </Button>
@@ -103,14 +104,14 @@ const PostVoteClient: React.FC<PostVoteClientProps> = ({
         onClick={() => vote('DOWN')}
         size='sm'
         className={cn({
-          'text-emerald-500': currentVote === 'DOWN',
+          'text-emerald-500': currentVote?.type === 'DOWN',
         })}
-        variant='outline'
+        variant='ghost'
         aria-label='downvote'
       >
         <ArrowBigDown
           className={cn('h-5 w-5 text-zinc-700', {
-            'text-red-500 fill-red-500': currentVote === 'DOWN',
+            'text-red-500 fill-red-500': currentVote?.type === 'DOWN',
           })}
         />
       </Button>
@@ -118,4 +119,4 @@ const PostVoteClient: React.FC<PostVoteClientProps> = ({
   );
 };
 
-export default PostVoteClient;
+export default CommentVotes;

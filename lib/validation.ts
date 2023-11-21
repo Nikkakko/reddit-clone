@@ -45,3 +45,11 @@ export const CommentVoteValidator = z.object({
 });
 
 export type CommentVoteRequest = z.infer<typeof CommentVoteValidator>;
+
+export const CommentValidator = z.object({
+  postId: z.string(),
+  text: z.string(),
+  replyToId: z.string().optional(),
+});
+
+export type CommentRequest = z.infer<typeof CommentValidator>;

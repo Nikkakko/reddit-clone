@@ -5,6 +5,7 @@ import { SubscibeToSubredditPayload } from '@/lib/validation';
 import * as z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/lib/config';
+import { VoteType } from '@prisma/client';
 
 export async function getSubbreditPosts(slug: string) {
   try {
@@ -226,6 +227,127 @@ export const createSubredditPost = async (
       error500: {
         title: 'Internal Server Error',
         message: 'There was an error creating a post',
+      },
+    };
+  }
+};
+
+export const createSubredditComment = async (
+  postId: string,
+  text: string,
+  replyToId: string | undefined
+) => {
+  try {
+    const user = await currentUser();
+
+    if (!user) {
+      return {
+        error401: {
+          title: 'Unauthorized',
+          message: 'You must be logged in to create a comment',
+        },
+      };
+    }
+
+    await db.comment.create({
+      data: {
+        text,
+        postId,
+        replyToId,
+        author: user.firstName + ' ' + user.lastName,
+        authorImage: user.imageUrl,
+      },
+    });
+
+    revalidatePath('/');
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return {
+        error400: {
+          title: 'Error',
+          message: error.message,
+        },
+      };
+    }
+
+    return {
+      error500: {
+        title: 'Internal Server Error',
+        message: 'There was an error creating a comment',
+      },
+    };
+  }
+};
+
+export const voteOnCommentAction = async (
+  commentId: string,
+  voteType: VoteType
+) => {
+  try {
+    const user = await currentUser();
+
+    if (!user) {
+      return {
+        error401: {
+          title: 'Unauthorized',
+          message: 'You must be logged in to vote on a comment',
+        },
+      };
+    }
+
+    const existingVote = await db.commentVote.findFirst({
+      where: {
+        userId: user.id,
+        commentId,
+      },
+    });
+    if (existingVote) {
+      // if vote type is the same as existing vote, delete the vote
+      if (existingVote.type === voteType) {
+        await db.commentVote.delete({
+          where: {
+            commentId,
+            userId: user.id,
+            id: existingVote.id,
+          },
+        });
+      } else {
+        // if vote type is different, update the vote
+        await db.commentVote.update({
+          where: {
+            commentId,
+            userId: user.id,
+            id: existingVote.id,
+          },
+          data: {
+            type: voteType,
+          },
+        });
+      }
+    }
+
+    // if no existing vote, create a new vote
+    await db.commentVote.create({
+      data: {
+        type: voteType,
+        userId: user.id,
+        commentId,
+      },
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return {
+        error400: {
+          title: 'Error',
+          message: error.message,
+        },
+      };
+    }
+
+    return {
+      error500: {
+        title: 'Internal Server Error',
+        message: 'There was an error voting on this comment',
       },
     };
   }
