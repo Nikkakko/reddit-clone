@@ -9,6 +9,10 @@ import { MessageSquare } from 'lucide-react';
 import { useOnClickOutside } from '@/hooks/use-on-click-outside';
 import { useUser } from '@clerk/nextjs';
 import CommentVotes from './CommentVotes';
+import { Textarea } from './ui/textarea';
+import { Label } from './ui/label';
+import { useToast } from './ui/use-toast';
+import { createSubredditComment } from '@/app/_actions/subreddit';
 
 type ExtendedComment = Comment & {
   votes: CommentVote[];
@@ -30,11 +34,45 @@ const PostComment: React.FC<PostCommentProps> = ({
 }) => {
   const commentRef = React.useRef<HTMLDivElement>(null);
   const [isReplying, setIsReplying] = React.useState<boolean>(false);
+  const [input, setInput] = React.useState<string>('');
+  const [isPending, startTransition] = React.useTransition();
+  const { toast } = useToast();
   const { user } = useUser();
   const router = useRouter();
   useOnClickOutside(commentRef, () => {
     setIsReplying(false);
   });
+
+  const handleSubmit = () => {
+    try {
+      startTransition(async () => {
+        const data = await createSubredditComment(
+          postId,
+          input,
+          comment.replyToId || comment.id
+        );
+        toast({
+          title: 'Reply posted',
+          description: 'Your reply has been posted',
+        });
+
+        if (data?.error401) {
+          toast({
+            title: 'Unauthorized',
+            description: 'You must be logged in to post a comment',
+          });
+        }
+        setInput('');
+        setIsReplying(false);
+        router.refresh();
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'An error occurred while posting your comment',
+      });
+    }
+  };
 
   return (
     <div className='flex flex-col' ref={commentRef}>
@@ -55,7 +93,7 @@ const PostComment: React.FC<PostCommentProps> = ({
         </div>
       </div>
 
-      <p className='text-sm mt-2'>{comment.text}</p>
+      <p className='text-sm mt-2 '>{comment.text}</p>
 
       <div className='flex gap-2 items-center'>
         <CommentVotes
@@ -76,6 +114,47 @@ const PostComment: React.FC<PostCommentProps> = ({
           Reply
         </Button>
       </div>
+
+      {isReplying ? (
+        <div className='grid w-full gap-1.5'>
+          <Label htmlFor='comment'>Your comment</Label>
+          <div className='mt-2'>
+            <Textarea
+              onFocus={e =>
+                e.currentTarget.setSelectionRange(
+                  e.currentTarget.value.length,
+                  e.currentTarget.value.length
+                )
+              }
+              autoFocus
+              id='comment'
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              rows={1}
+              placeholder='What are your thoughts?'
+            />
+
+            <div className='mt-2 flex justify-end gap-2'>
+              <Button
+                tabIndex={-1}
+                variant='subtle'
+                onClick={() => setIsReplying(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={isPending}
+                onClick={() => {
+                  if (!input) return;
+                  handleSubmit();
+                }}
+              >
+                Post
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

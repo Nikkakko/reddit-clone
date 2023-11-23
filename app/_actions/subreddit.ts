@@ -301,39 +301,37 @@ export const voteOnCommentAction = async (
         commentId,
       },
     });
+
     if (existingVote) {
-      // if vote type is the same as existing vote, delete the vote
       if (existingVote.type === voteType) {
         await db.commentVote.delete({
           where: {
-            commentId,
-            userId: user.id,
             id: existingVote.id,
-          },
-        });
-      } else {
-        // if vote type is different, update the vote
-        await db.commentVote.update({
-          where: {
-            commentId,
             userId: user.id,
-            id: existingVote.id,
-          },
-          data: {
-            type: voteType,
+            commentId,
           },
         });
       }
+
+      await db.commentVote.update({
+        where: {
+          id: existingVote.id,
+        },
+        data: {
+          type: voteType,
+        },
+      });
+    } else {
+      await db.commentVote.create({
+        data: {
+          type: voteType,
+          commentId,
+          userId: user.id,
+        },
+      });
     }
 
-    // if no existing vote, create a new vote
-    await db.commentVote.create({
-      data: {
-        type: voteType,
-        userId: user.id,
-        commentId,
-      },
-    });
+    revalidatePath('/');
   } catch (error) {
     if (error instanceof z.ZodError) {
       return {
