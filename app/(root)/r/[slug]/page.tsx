@@ -5,11 +5,6 @@ import { db } from '@/lib/db';
 import { currentUser } from '@clerk/nextjs';
 import { notFound } from 'next/navigation';
 import * as React from 'react';
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from '@tanstack/react-query';
 
 export const dynamic = 'auto';
 

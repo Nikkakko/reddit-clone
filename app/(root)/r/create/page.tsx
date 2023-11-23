@@ -32,7 +32,6 @@ interface CreatePageProps {}
 
 const CreatePage: React.FC<CreatePageProps> = ({}) => {
   const router = useRouter();
-  const [input, setInput] = React.useState('');
   const [isPending, startTransition] = React.useTransition();
   const { toast } = useToast();
 

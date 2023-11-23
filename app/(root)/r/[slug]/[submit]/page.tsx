@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import * as React from 'react';

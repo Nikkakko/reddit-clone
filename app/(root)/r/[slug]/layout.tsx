@@ -61,7 +61,6 @@ const SlugLayout: React.FC<SlugLayoutProps> = async ({
     },
   });
 
-  console.log(slug);
   return (
     <div className='sm:container max-w-7xl mx-auto h-full pt-12'>
       <div>
