@@ -6,8 +6,6 @@ import { currentUser } from '@clerk/nextjs';
 import { notFound } from 'next/navigation';
 import * as React from 'react';
 
-export const dynamic = 'auto';
-
 interface Props {
   params: {
     slug: string;

@@ -3,11 +3,12 @@ import { currentUser } from '@clerk/nextjs';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { NextRequest } from 'next/server';
+import { User } from '@clerk/nextjs/server';
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
 
-  const session = await currentUser();
+  const session: User | null = await currentUser();
 
   let followedCommunitiesIds: string[] = [];
 
