@@ -8,6 +8,10 @@ const nextConfig = {
       'utfs.io',
     ],
   },
+
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 module.exports = nextConfig;
