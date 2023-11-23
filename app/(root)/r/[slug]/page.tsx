@@ -60,7 +60,6 @@ const SlugPage: React.FC<Props> = async ({ params: { slug } }) => {
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
 
-  console.log(initialPosts, subreddit);
   if (!subreddit) return notFound();
   return (
     <>
