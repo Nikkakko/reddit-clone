@@ -8,7 +8,10 @@ import { Button } from './ui/button';
 import { ImageIcon, Link2 } from 'lucide-react';
 
 interface MiniCreatePostProps {
-  user: User | null;
+  user: {
+    imageUrl: string;
+    firstName: string;
+  };
 }
 
 const MiniCreatePost: React.FC<MiniCreatePostProps> = ({ user }) => {

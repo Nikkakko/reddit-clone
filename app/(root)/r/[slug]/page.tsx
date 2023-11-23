@@ -61,7 +61,12 @@ const SlugPage: React.FC<Props> = async ({ params: { slug } }) => {
       <h1 className='font-bold text-3xl md:text-4xl h-14'>
         r/{subreddit.name}
       </h1>
-      <MiniCreatePost user={JSON.parse(JSON.stringify(user))} />
+      <MiniCreatePost
+        user={{
+          imageUrl: user?.imageUrl ?? '',
+          firstName: user?.firstName ?? '',
+        }}
+      />
       {/* TODO: Show posts in user feed */}
       <PostFeed initialPosts={initialPosts} subredditName={subreddit.name} />
     </>

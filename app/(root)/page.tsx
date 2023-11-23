@@ -1,17 +1,13 @@
 import CustomFeed from '@/components/CustomFeed';
 import GeneralFeed from '@/components/GeneralFeed';
 import { currentUser } from '@clerk/nextjs';
-import Image from 'next/image';
 import { Home as HomeIcon } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
-
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';
 
 export default async function Home() {
   const user = await currentUser();
+
   return (
     <>
       <h1 className='font-bold text-3xl md:text-4xl'>Your feed</h1>

@@ -1,4 +1,4 @@
-import { UserButton, SignInButton } from '@clerk/nextjs';
+import { UserButton, SignInButton, currentUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
 import * as React from 'react';
 import { Button } from '../ui/button';
@@ -7,11 +7,10 @@ import { ThemeToggle } from './theme-toggle';
 import Link from 'next/link';
 import SearchBar from '../SearchBar';
 
-interface SiteHeaderProps {
-  user: User | null;
-}
+interface SiteHeaderProps {}
 
-const SiteHeader: React.FC<SiteHeaderProps> = ({ user }) => {
+const SiteHeader: React.FC<SiteHeaderProps> = async () => {
+  const user = await currentUser();
   const initials = `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`;
 
   return (

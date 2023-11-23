@@ -20,8 +20,6 @@ interface PostFeedProps {
 const PostFeed: React.FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
   const lastPostRef = React.useRef<HTMLElement>(null);
   const { userId } = useAuth();
-  const [isPending, startTransition] = React.useTransition();
-  const [votesAmt, setVotesAmt] = React.useState(0);
 
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,

@@ -5,7 +5,10 @@ import Image from 'next/image';
 import { Avatar, AvatarFallback } from './ui/avatar';
 
 interface UserAvatarProps extends AvatarProps {
-  user: Pick<User, 'imageUrl' | 'firstName'> | null;
+  user: {
+    imageUrl: string;
+    firstName: string;
+  };
 }
 
 export function UserAvatar({ user, ...props }: UserAvatarProps) {

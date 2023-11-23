@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { currentUser } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { NextRequest } from 'next/server';

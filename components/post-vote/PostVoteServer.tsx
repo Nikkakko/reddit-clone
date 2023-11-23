@@ -1,7 +1,7 @@
 import type { Post, Vote } from '@prisma/client';
 import { notFound } from 'next/navigation';
 import PostVoteClient from './PostVoteClient';
-import { currentUser } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs';
 
 interface PostVoteServerProps {
   postId: string;

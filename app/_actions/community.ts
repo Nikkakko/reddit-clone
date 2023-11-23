@@ -1,7 +1,7 @@
 'use server';
 import { db } from '@/lib/db';
 import { getUserEmail } from '@/lib/utils';
-import { currentUser } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs';
 import { revalidatePath } from 'next/cache';
 
 export default async function createCommunityAction(input: string) {

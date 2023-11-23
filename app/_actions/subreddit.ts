@@ -1,6 +1,6 @@
 'use server';
 import { db } from '@/lib/db';
-import { currentUser } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs';
 import { SubscibeToSubredditPayload } from '@/lib/validation';
 import * as z from 'zod';
 import { revalidatePath } from 'next/cache';
