@@ -13,6 +13,8 @@ import axios, { AxiosError } from 'axios';
 import { useToast } from './ui/use-toast';
 import { Button } from './ui/button';
 import { voteOnCommentAction } from '@/app/_actions/subreddit';
+import { useAuth } from '@clerk/nextjs';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 type PartialVote = Pick<CommentVote, 'type'>;
 
@@ -33,6 +35,7 @@ const CommentVotes: React.FC<CommentVoteProps> = ({
     _currentVote
   );
   const prevVote = usePrevious(currentVote);
+  const { userId } = useAuth();
 
   const router = useRouter();
 
@@ -83,38 +86,48 @@ const CommentVotes: React.FC<CommentVoteProps> = ({
   return (
     <div className='flex gap-1'>
       {/* upvote */}
-      <Button
-        onClick={() => vote('UP')}
-        size='sm'
-        variant='ghost'
-        aria-label='upvote'
-      >
-        <ArrowBigUp
-          className={cn('h-5 w-5 text-zinc-700', {
-            'text-emerald-500 fill-emerald-500': currentVote?.type === 'UP',
-          })}
-        />
-      </Button>
-
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={() => userId && vote('UP')}
+            size='sm'
+            variant='outline'
+            aria-label='upvote'
+          >
+            <ArrowBigUp
+              className={cn('h-5 w-5 text-zinc-700', {
+                'text-emerald-500 fill-emerald-500': currentVote?.type === 'UP',
+              })}
+            />
+          </Button>
+        </TooltipTrigger>
+        {!userId && <TooltipContent>{<p>Login to vote</p>}</TooltipContent>}
+      </Tooltip>
       {/* score */}
       <p className='text-center py-2 font-medium text-sm '>{votesAmt}</p>
 
       {/* downvote */}
-      <Button
-        onClick={() => vote('DOWN')}
-        size='sm'
-        className={cn({
-          'text-emerald-500': currentVote?.type === 'DOWN',
-        })}
-        variant='ghost'
-        aria-label='downvote'
-      >
-        <ArrowBigDown
-          className={cn('h-5 w-5 text-zinc-700', {
-            'text-red-500 fill-red-500': currentVote?.type === 'DOWN',
-          })}
-        />
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={() => userId && vote('DOWN')}
+            size='sm'
+            className={cn({
+              'text-emerald-500': currentVote?.type === 'DOWN',
+            })}
+            variant='outline'
+            aria-label='downvote'
+            // disabled={!userId}
+          >
+            <ArrowBigDown
+              className={cn('h-5 w-5 text-zinc-700', {
+                'text-red-500 fill-red-500': currentVote?.type === 'DOWN',
+              })}
+            />
+          </Button>
+        </TooltipTrigger>
+        {!userId && <TooltipContent>{<p>Login to vote</p>}</TooltipContent>}
+      </Tooltip>
     </div>
   );
 };

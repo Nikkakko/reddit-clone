@@ -60,6 +60,8 @@ const SlugLayout: React.FC<SlugLayoutProps> = async ({
       },
     },
   });
+
+  console.log(slug);
   return (
     <div className='sm:container max-w-7xl mx-auto h-full pt-12'>
       <div>
@@ -109,7 +111,7 @@ const SlugLayout: React.FC<SlugLayoutProps> = async ({
                   variant: 'outline',
                   className: 'w-full mb-6',
                 })}
-                href={`r/${slug}/submit`}
+                href={`/r/${slug}/submit`}
               >
                 Create Post
               </Link>
