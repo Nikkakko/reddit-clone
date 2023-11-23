@@ -2,10 +2,9 @@ import { db } from '@/lib/db';
 import { currentUser } from '@clerk/nextjs';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { NextRequest } from 'next/server';
 import { User } from '@clerk/nextjs/server';
 
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   const url = new URL(req.url);
 
   const session: User | null = await currentUser();
@@ -76,7 +75,7 @@ export async function GET(req: NextRequest) {
       where: whereClause,
     });
 
-    revalidatePath(req.nextUrl.pathname);
+    revalidatePath(req.url);
 
     return new Response(JSON.stringify(posts));
   } catch (error) {
