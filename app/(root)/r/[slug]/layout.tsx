@@ -17,10 +17,10 @@ interface SlugLayoutProps {
   };
 }
 
-const SlugLayout: React.FC<SlugLayoutProps> = async ({
+export default async function SlugLayout({
   children,
   params: { slug },
-}) => {
+}: SlugLayoutProps) {
   const user = await currentUser();
   const subreddit = await db.subreddit.findFirst({
     where: {
@@ -120,6 +120,4 @@ const SlugLayout: React.FC<SlugLayoutProps> = async ({
       </div>
     </div>
   );
-};
-
-export default SlugLayout;
+}

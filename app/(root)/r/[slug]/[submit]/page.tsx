@@ -10,7 +10,7 @@ interface SubmitPageProps {
   };
 }
 
-const SubmitPage: React.FC<SubmitPageProps> = async ({ params }) => {
+export default async function SubmitPage({ params }: SubmitPageProps) {
   const subreddit = await db.subreddit.findFirst({
     where: {
       name: params.slug,
@@ -37,6 +37,4 @@ const SubmitPage: React.FC<SubmitPageProps> = async ({ params }) => {
       <CreatePostTabs subredditId={subreddit.id} />
     </div>
   );
-};
-
-export default SubmitPage;
+}

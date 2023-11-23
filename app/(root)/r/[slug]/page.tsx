@@ -12,7 +12,7 @@ interface Props {
   };
 }
 
-const SlugPage: React.FC<Props> = async ({ params: { slug } }) => {
+export default async function SlugPage({ params: { slug } }: Props) {
   const user = await currentUser();
 
   const subreddit = await db.subreddit.findFirst({
@@ -69,6 +69,4 @@ const SlugPage: React.FC<Props> = async ({ params: { slug } }) => {
       <PostFeed initialPosts={initialPosts} subredditName={subreddit.name} />
     </>
   );
-};
-
-export default SlugPage;
+}

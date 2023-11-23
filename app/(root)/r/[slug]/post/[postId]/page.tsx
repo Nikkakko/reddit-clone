@@ -13,7 +13,7 @@ interface Props {
   };
 }
 
-async function PostDetailPage({ params: { postId } }: Props) {
+export default async function PostDetailPage({ params: { postId } }: Props) {
   const post = await db.post.findFirst({
     where: {
       id: postId,
@@ -90,5 +90,3 @@ function PostVoteShell() {
     </div>
   );
 }
-
-export default PostDetailPage;
