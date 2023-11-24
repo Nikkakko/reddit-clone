@@ -5,8 +5,6 @@ import { db } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/lib/config';
 
-interface CustomFeedProps {}
-
 const CustomFeed = async () => {
   const user = await currentUser();
 

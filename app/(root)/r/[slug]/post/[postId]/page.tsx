@@ -13,9 +13,6 @@ interface Props {
   };
 }
 
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';
-
 export default async function PostDetailPage({ params: { postId } }: Props) {
   const post = await db.post.findFirst({
     where: {

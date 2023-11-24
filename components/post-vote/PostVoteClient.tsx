@@ -40,7 +40,12 @@ const PostVoteClient: React.FC<PostVoteClientProps> = ({
 
   const { mutate: vote } = useMutation({
     mutationFn: async (type: VoteType) => {
-      await voteToPostAction(postId, type);
+      const payload: PostVoteRequest = {
+        voteType: type,
+        postId: postId,
+      };
+
+      await axios.patch('/api/subreddit/post/vote', payload);
     },
 
     onError: (err, voteType) => {

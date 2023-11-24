@@ -3,7 +3,6 @@ import * as React from 'react';
 
 import { ArrowBigDown, ArrowBigUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { voteToPostAction } from '@/app/_actions/posts';
 import { useRouter } from 'next/navigation';
 import { CommentVote, Vote, VoteType } from '@prisma/client';
 import { usePrevious } from '@mantine/hooks';

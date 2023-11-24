@@ -1,4 +1,4 @@
-import { User } from '@clerk/nextjs/server';
+'use client';
 import { AvatarProps } from '@radix-ui/react-avatar';
 import { Icons } from '@/components/Icons';
 import Image from 'next/image';

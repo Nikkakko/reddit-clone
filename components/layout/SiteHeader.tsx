@@ -1,8 +1,6 @@
 import { UserButton, SignInButton, currentUser } from '@clerk/nextjs';
-import { User } from '@clerk/nextjs/server';
 import * as React from 'react';
 import { Button } from '../ui/button';
-import { getUserEmail } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
 import Link from 'next/link';
 import SearchBar from '../SearchBar';

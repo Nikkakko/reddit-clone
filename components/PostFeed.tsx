@@ -3,14 +3,11 @@ import { ExtendedPost } from '@/types/db';
 import * as React from 'react';
 import { useIntersection } from '@mantine/hooks';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getPosts, voteToPostAction } from '@/app/_actions/posts';
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/lib/config';
 import Post from './Post';
 import { Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '@clerk/nextjs';
-import { Button } from './ui/button';
-import { VoteType } from '@prisma/client';
 
 interface PostFeedProps {
   initialPosts: ExtendedPost[];

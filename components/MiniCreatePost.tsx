@@ -1,5 +1,4 @@
 'use client';
-import { User } from '@clerk/nextjs/server';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { UserAvatar } from './UserAvatar';

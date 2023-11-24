@@ -11,7 +11,6 @@ export default async function LobbyLayout({ children }: LobbyLayoutProps) {
       <main className='container max-w-7xl mx-auto h-full pt-12'>
         {children}
       </main>
-      {/* <SiteFooter /> */}
     </div>
   );
 }
