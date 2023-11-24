@@ -4,17 +4,12 @@ import { Icons } from '@/components/Icons';
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from './ui/avatar';
 
-interface UserAvatarProps extends AvatarProps {
-  user: {
-    imageUrl: string;
-    firstName: string;
-  };
-}
+interface UserAvatarProps extends AvatarProps {}
 
-export function UserAvatar({ user, ...props }: UserAvatarProps) {
+export function UserAvatar({ ...props }: UserAvatarProps) {
   return (
     <Avatar {...props}>
-      {user?.imageUrl ? (
+      {/* {user?.imageUrl ? (
         <div className='relative aspect-square h-full w-full'>
           <Image
             fill
@@ -28,7 +23,7 @@ export function UserAvatar({ user, ...props }: UserAvatarProps) {
           <span className='sr-only'>{user?.firstName}</span>
           <Icons.user className='h-4 w-4' />
         </AvatarFallback>
-      )}
+      )} */}
     </Avatar>
   );
 }

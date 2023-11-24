@@ -16,9 +16,7 @@ export default async function SlugPage({ params: { slug } }: Props) {
   const user = await currentUser();
 
   const subreddit = await db.subreddit.findFirst({
-    where: {
-      name: slug,
-    },
+    where: { name: slug },
     include: {
       posts: {
         include: {
@@ -26,31 +24,12 @@ export default async function SlugPage({ params: { slug } }: Props) {
           comments: true,
           subreddit: true,
         },
-        take: INFINITE_SCROLL_PAGINATION_RESULTS, // Limit the number of posts fetched
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: INFINITE_SCROLL_PAGINATION_RESULTS,
       },
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
-
-  const initialPosts = await db.post.findMany({
-    where: {
-      subreddit: {
-        name: slug,
-      },
-    },
-
-    orderBy: {
-      createdAt: 'desc',
-    },
-
-    include: {
-      votes: true,
-      comments: true,
-      subreddit: true,
-    },
-    take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
 
   if (!subreddit) return notFound();
@@ -59,14 +38,9 @@ export default async function SlugPage({ params: { slug } }: Props) {
       <h1 className='font-bold text-3xl md:text-4xl h-14'>
         r/{subreddit.name}
       </h1>
-      <MiniCreatePost
-        user={{
-          imageUrl: user?.imageUrl ?? '',
-          firstName: user?.firstName ?? '',
-        }}
-      />
+      <MiniCreatePost />
       {/* TODO: Show posts in user feed */}
-      <PostFeed initialPosts={initialPosts} subredditName={subreddit.name} />
+      <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} />
     </>
   );
 }

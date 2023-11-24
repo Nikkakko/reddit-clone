@@ -7,14 +7,9 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { ImageIcon, Link2 } from 'lucide-react';
 
-interface MiniCreatePostProps {
-  user: {
-    imageUrl: string;
-    firstName: string;
-  };
-}
+interface MiniCreatePostProps {}
 
-const MiniCreatePost: React.FC<MiniCreatePostProps> = ({ user }) => {
+const MiniCreatePost: React.FC<MiniCreatePostProps> = () => {
   const router = useRouter();
   const pathname = usePathname();
   return (
@@ -25,7 +20,7 @@ const MiniCreatePost: React.FC<MiniCreatePostProps> = ({ user }) => {
     >
       <div className='h-full px-6 py-4 flex justify-between gap-6'>
         <div className='relative'>
-          <UserAvatar user={user} />
+          <UserAvatar />
 
           <span className='absolute bottom-0 right-0 rounded-full w-3 h-3 bg-green-500 outline outline-2 outline-background' />
         </div>
