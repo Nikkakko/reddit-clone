@@ -38,7 +38,12 @@ export default async function SlugPage({ params: { slug } }: Props) {
       <h1 className='font-bold text-3xl md:text-4xl h-14'>
         r/{subreddit.name}
       </h1>
-      <MiniCreatePost />
+      <MiniCreatePost
+        user={{
+          firstName: user?.firstName || 'Anonymous',
+          imageUrl: user?.imageUrl || '',
+        }}
+      />
       {/* TODO: Show posts in user feed */}
       <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} />
     </>

@@ -77,7 +77,12 @@ const PostComment: React.FC<PostCommentProps> = ({
   return (
     <div className='flex flex-col' ref={commentRef}>
       <div className='flex items-center'>
-        <UserAvatar />
+        <UserAvatar
+          user={{
+            firstName: comment.author || 'Unknown',
+            imageUrl: comment.authorImage || '',
+          }}
+        />
 
         <div className='ml-2 flex items-center gap-x-2'>
           <p className='text-sm font-medium'>{comment.author || 'Unknown'}</p>
