@@ -7,9 +7,7 @@ import { Button } from './ui/button';
 import { Icons } from './Icons';
 import { deleteImage } from '@/app/_actions/upload';
 
-interface UploadUiProps {}
-
-const UploadUi: React.FC<UploadUiProps> = ({}) => {
+const UploadUi = () => {
   const [image, setImage] = React.useState<string | null>(null);
   const [imageName, setImageName] = React.useState<string>('');
   const { toast } = useToast();

@@ -7,7 +7,7 @@ import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/lib/config';
 
 interface CustomFeedProps {}
 
-const CustomFeed: React.FC<CustomFeedProps> = async () => {
+const CustomFeed = async () => {
   const user = await currentUser();
 
   if (!user) return notFound();

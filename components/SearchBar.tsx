@@ -18,9 +18,7 @@ import { Users } from 'lucide-react';
 import { useOnClickOutside } from '@/hooks/use-on-click-outside';
 import useDebounce from '@/hooks/use-debounce';
 
-interface SearchBarProps {}
-
-const SearchBar: React.FC<SearchBarProps> = ({}) => {
+const SearchBar = () => {
   const [input, setInput] = React.useState<string>('');
   const router = useRouter();
   const pathname = usePathname();

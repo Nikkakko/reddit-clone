@@ -22,7 +22,7 @@ interface CommentsSectionProps {
   comments?: ExtendedComment[];
 }
 
-const CommentsSection: React.FC<CommentsSectionProps> = async ({ postId }) => {
+const CommentsSection = async ({ postId }: CommentsSectionProps) => {
   const user = await currentUser();
 
   const comments = await db.comment.findMany({

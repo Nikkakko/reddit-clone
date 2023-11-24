@@ -1,16 +1,13 @@
 'use client';
-import { formatTimeToNow, getUserById } from '@/lib/utils';
+import { formatTimeToNow } from '@/lib/utils';
 import { ExtendedPost } from '@/types/db';
-import { clerkClient } from '@clerk/nextjs';
-import { User } from '@clerk/nextjs/server';
+
 import { Post, Vote } from '@prisma/client';
 import Link from 'next/link';
 // import { Post } from '@prisma/client';
 import * as React from 'react';
 import PostVoteClient from './post-vote/PostVoteClient';
 import { MessageSquare } from 'lucide-react';
-import EditorOutput from './EditorOutput';
-import PostVoteServer from './post-vote/PostVoteServer';
 
 type PartialVote = Pick<Vote, 'type'>;
 

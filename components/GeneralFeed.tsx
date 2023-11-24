@@ -3,9 +3,7 @@ import { db } from '@/lib/db';
 import * as React from 'react';
 import PostFeed from './PostFeed';
 
-interface GeneralFeedProps {}
-
-const GeneralFeed: React.FC<GeneralFeedProps> = async ({}) => {
+const GeneralFeed = async () => {
   const posts = await db.post.findMany({
     orderBy: {
       createdAt: 'desc',
