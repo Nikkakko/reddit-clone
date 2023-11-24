@@ -5,20 +5,17 @@ import { currentUser } from '@clerk/nextjs';
 import { revalidatePath } from 'next/cache';
 
 export default async function createCommunityAction(input: string) {
-  const user = await currentUser();
-
-  const creatorName = getUserEmail(user);
-
-  if (!user) {
-    return {
-      error401: {
-        title: 'Not authenticated',
-        message: 'You must be logged in to create a community',
-      },
-    };
-  }
-
   try {
+    const user = await currentUser();
+
+    if (!user) {
+      return {
+        error401: {
+          title: 'Not authenticated',
+          message: 'You must be logged in to create a community',
+        },
+      };
+    }
     const subredditExists = await db.subreddit.findFirst({
       where: {
         name: input,

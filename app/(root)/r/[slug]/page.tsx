@@ -33,6 +33,8 @@ export default async function SlugPage({ params: { slug } }: Props) {
   });
 
   if (!subreddit) return notFound();
+
+  
   return (
     <>
       <h1 className='font-bold text-3xl md:text-4xl h-14'>

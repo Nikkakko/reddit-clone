@@ -1,8 +1,5 @@
 'use server';
-
 import { db } from '@/lib/db';
-import { PostVoteValidator } from '@/lib/validation';
-import { ExtendedPost } from '@/types/db';
 import { currentUser, clerkClient } from '@clerk/nextjs/server';
 import { VoteType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
