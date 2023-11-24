@@ -22,10 +22,9 @@ export default async function SlugLayout({
   params: { slug },
 }: SlugLayoutProps) {
   const user = await currentUser();
+
   const subreddit = await db.subreddit.findFirst({
-    where: {
-      name: slug,
-    },
+    where: { name: slug },
     include: {
       posts: {
         include: {
@@ -33,8 +32,6 @@ export default async function SlugLayout({
         },
       },
     },
-
-    take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
 
   const subscription = !user
@@ -44,7 +41,6 @@ export default async function SlugLayout({
           subreddit: {
             name: slug,
           },
-
           userId: user.id,
         },
       });

@@ -12,6 +12,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+
+  //enable app dir
 };
 
 module.exports = nextConfig;
