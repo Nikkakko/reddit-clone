@@ -23,17 +23,17 @@ const PostFeed: React.FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
     threshold: 1,
   });
 
-  const getPostsPage = async ({ pageParam }: { pageParam: number }) => {
-    const query =
-      `/api/posts?limit=${INFINITE_SCROLL_PAGINATION_RESULTS}&page=${pageParam}` +
-      (!!subredditName ? `&subredditName=${subredditName}` : '');
-    const { data } = await axios.get(query);
-    return data;
-  };
-
   const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ['posts'],
-    queryFn: getPostsPage,
+    queryFn: async ({ pageParam = 1 }) => {
+      const query =
+        `/api/posts?limit=${INFINITE_SCROLL_PAGINATION_RESULTS}&page=${pageParam}` +
+        (!!subredditName ? `&subredditName=${subredditName}` : '');
+
+      const { data } = await axios.get(query);
+      return data as ExtendedPost[];
+    },
+
     initialPageParam: 1,
     getNextPageParam: (_, pages) => {
       return pages.length + 1;
@@ -42,8 +42,7 @@ const PostFeed: React.FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
     initialData: { pages: [initialPosts], pageParams: [1] },
   });
 
-  const posts =
-    data?.pages.flatMap(page => page as ExtendedPost[]) ?? initialPosts;
+  const posts = data?.pages.flatMap(page => page) ?? initialPosts;
 
   React.useEffect(() => {
     if (entry?.isIntersecting) {

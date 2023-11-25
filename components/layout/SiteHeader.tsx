@@ -1,4 +1,11 @@
-import { UserButton, SignInButton, currentUser } from '@clerk/nextjs';
+'use client';
+import {
+  UserButton,
+  SignInButton,
+  currentUser,
+  SignedIn,
+  SignedOut,
+} from '@clerk/nextjs';
 import * as React from 'react';
 import { Button } from '../ui/button';
 import { ThemeToggle } from './theme-toggle';
@@ -7,10 +14,7 @@ import SearchBar from '../SearchBar';
 
 interface SiteHeaderProps {}
 
-const SiteHeader: React.FC<SiteHeaderProps> = async () => {
-  const user = await currentUser();
-  const initials = `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`;
-
+const SiteHeader: React.FC<SiteHeaderProps> = () => {
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background py-2'>
       <div className='container max-w-7xl h-full mx-auto flex items-center justify-between gap-2'>
@@ -22,14 +26,14 @@ const SiteHeader: React.FC<SiteHeaderProps> = async () => {
         <SearchBar />
 
         <div className='flex items-center space-x-2'>
-          {user ? (
+          <SignedIn>
             <UserButton afterSignOutUrl='/' />
-          ) : (
-            <Button asChild variant='outline' size='sm'>
-              <SignInButton />
-            </Button>
-          )}
-          {user && <span className=''>{initials}</span>}
+          </SignedIn>
+          <SignedOut>
+            <Link href='/signup'>
+              <Button variant='outline'>Sign in</Button>
+            </Link>
+          </SignedOut>
           <ThemeToggle />
         </div>
       </div>
