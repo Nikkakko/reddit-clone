@@ -47,6 +47,8 @@ const CustomFeed = async () => {
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
 
+  if (!posts) return <div>There are no posts to show.</div>;
+
   return <PostFeed initialPosts={posts} />;
 };
 
