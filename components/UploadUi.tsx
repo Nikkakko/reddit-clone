@@ -19,9 +19,9 @@ const UploadUi = () => {
       setImageName(localStorage.getItem('imageName')!);
   }, []);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setImage(null);
-    deleteImage(imageName);
+    await deleteImage(imageName);
     localStorage.removeItem('image');
     localStorage.removeItem('imageName');
   };

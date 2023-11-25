@@ -4,7 +4,6 @@ import { Comment, CommentVote } from '@prisma/client';
 import * as React from 'react';
 import PostComment from './PostComment';
 import CreateComment from './CreateComment';
-import { getUserById } from '@/lib/utils';
 
 type ExtendedComment = Comment & {
   votes: CommentVote[];

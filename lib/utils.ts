@@ -57,20 +57,6 @@ export function formatTimeToNow(date: Date): string {
   });
 }
 
-export function getUserEmail(user: User | null | undefined) {
-  const email =
-    user?.emailAddresses?.find(e => e.id === user.primaryEmailAddressId)
-      ?.emailAddress ?? '';
-
-  return email;
-}
-
-export async function getUserById(userId: string) {
-  const user = await clerkClient.users?.getUser(userId);
-
-  return user;
-}
-
 export const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
