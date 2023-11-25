@@ -58,7 +58,6 @@ export default async function PostDetailPage({ params: { postId } }: Props) {
             {post?.title}
           </h1>
 
-          {/* <EditorOutput content={post?.content ?? cachedPost.content} /> */}
           <React.Suspense
             fallback={<Loader2 className='h-5 w-5 animate-spin ' />}
           >

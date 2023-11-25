@@ -1,10 +1,8 @@
 'use client';
 import { formatTimeToNow } from '@/lib/utils';
 import { ExtendedPost } from '@/types/db';
-
 import { Post, Vote } from '@prisma/client';
 import Link from 'next/link';
-// import { Post } from '@prisma/client';
 import * as React from 'react';
 import PostVoteClient from './post-vote/PostVoteClient';
 import { MessageSquare } from 'lucide-react';
@@ -67,8 +65,6 @@ const Post: React.FC<PostProps> = ({
             className='relative text-sm max-h-40 w-full overflow-clip'
             ref={pRef}
           >
-            {/* <EditorOutput content={post.content} /> */}
-
             {pRef.current?.clientHeight === 160 ? (
               // blur bottom if content is too long
               <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent'></div>
