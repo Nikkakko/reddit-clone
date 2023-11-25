@@ -45,7 +45,7 @@ const PostVoteClient: React.FC<PostVoteClientProps> = ({
         postId: postId,
       };
 
-      await axios.patch('/api/subreddit/post/vote', payload);
+      await voteToPostAction(payload.postId, payload.voteType);
     },
 
     onError: (err, voteType) => {
